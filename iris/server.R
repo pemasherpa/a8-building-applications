@@ -1,13 +1,30 @@
-library(shiny)
+library(rsconnect)
 
-shinyServer(function(input, outpit)) {
-  
-  output$distPlot <- renderPlot({
+library(shiny)
+data(iris)
+
+shinyServer(function(input, output) {
+
+  output$scatter <- renderPlotly({
     
-    x    <- faithful[, 2] 
-    bins <- seq(min(x), max(x), length.out = input$bins + 1)
-    
-    hist(x, breaks = bins, col = "darkgray", border = "white")
-    
+    plot_ly(iris, 
+            x = iris[, input$xvar],
+            y = iris[, input$yvar],
+            mode = "markers",
+            marker = list(
+            size = 6,
+            color = "DeepSkyBlue"
+            )
+    ) %>% 
+      
+      layout(
+        title = paste("Size Comparison of Iris", input$species),
+        xaxis = list(range = c(0, 10), 
+                     title = paste(input$xvar)),
+        yaxis = list(range = c(0, 10),
+                     title = paste(input$yvar))
+      ) %>%
+      
+      return()
   })
-}
+})
